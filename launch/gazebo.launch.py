@@ -1,16 +1,10 @@
-"""
-Spawn Robot Description
-"""
 import os
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
 
 def generate_launch_description():
     test_robot_description_share = FindPackageShare(package='robot_urdf').find('robot_urdf')
@@ -28,23 +22,38 @@ def generate_launch_description():
         executable='joint_state_publisher',
         name='joint_state_publisher'
     )
-   
-
+    
+    moving_controller_node = Node(
+        package='assignment2_rt_part2',
+        executable='moving_controller',
+        name='PositionBasedMotion'
+    )
+    
     # GAZEBO_MODEL_PATH has to be correctly set for Gazebo to be able to find the model
-    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-                        arguments=['-entity', 'my_test_robot', '-topic', '/robot_description', '-x', '2.0', '-y', '2.0'],
-                        output='screen')
+    spawn_entity = Node(
+        package='gazebo_ros',
+        executable='spawn_entity.py',
+        arguments=['-entity', 'my_test_robot', '-topic', '/robot_description', '-x', '2.0', '-y', '2.0'],
+        output='screen'
+    )
 
     return LaunchDescription([
-        DeclareLaunchArgument(name='model', default_value=default_model_path,
-                                    description='Absolute path to robot urdf file'),
+        DeclareLaunchArgument(
+            name='model',
+            default_value=default_model_path,
+            description='Absolute path to robot urdf file'
+        ),
         robot_state_publisher_node,
         joint_state_publisher_node,
         spawn_entity,
         ExecuteProcess(
-            cmd=['gazebo', '--verbose','worlds/empty.world', '-s', 'libgazebo_ros_factory.so'],
-            output='screen'),
+            cmd=['gazebo', '--verbose', 'worlds/empty.world', '-s', 'libgazebo_ros_factory.so'],
+            output='screen'
+        ),
         ExecuteProcess(
             cmd=['rviz2', '-d', rviz_config_path],
-            output='screen'),
+            output='screen'
+        ),
+        moving_controller_node,  # Lancia il controller direttamente
     ])
+
