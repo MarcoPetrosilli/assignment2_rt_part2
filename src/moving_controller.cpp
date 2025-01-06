@@ -8,10 +8,9 @@ public:
     PositionBasedMotion()
     : Node("PositionBasedMotion")
     {
-        // Publisher to /cmd_vel
+    
         publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
 
-        // Subscription to /odom
         subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
             "/odom",
             10,
@@ -24,10 +23,9 @@ private:
         auto position = msg->pose.pose.position;
         auto orientation = msg->pose.pose.orientation;
 
-        // Log position and orientation
-        RCLCPP_INFO(this->get_logger(), "Position: x=%.2f, y=%.2f, z=%.2f", position.x, position.y, position.z);
+        /*RCLCPP_INFO(this->get_logger(), "Position: x=%.2f, y=%.2f, z=%.2f", position.x, position.y, position.z);
         RCLCPP_INFO(this->get_logger(), "Orientation: x=%.2f, y=%.2f, z=%.2f, w=%.2f",
-                    orientation.x, orientation.y, orientation.z, orientation.w);
+                    orientation.x, orientation.y, orientation.z, orientation.w);*/
 
         geometry_msgs::msg::Twist vel;
 
