@@ -21,7 +21,7 @@ private:
     void odometryListenerCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
     {
         auto position = msg->pose.pose.position;
-        auto orientation = msg->pose.pose.orientation;
+        //auto orientation = msg->pose.pose.orientation;
 
         /*RCLCPP_INFO(this->get_logger(), "Position: x=%.2f, y=%.2f, z=%.2f", position.x, position.y, position.z);
         RCLCPP_INFO(this->get_logger(), "Orientation: x=%.2f, y=%.2f, z=%.2f, w=%.2f",
