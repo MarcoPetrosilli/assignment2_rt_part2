@@ -29,6 +29,13 @@ def generate_launch_description():
         name='PositionBasedMotion'
     )
     
+    ervice_server_node = Node(
+        package='assignment2_rt_part2',  
+        executable='vel_srv_server',    
+        name='vel_srv_server',  
+        output='screen'
+    )
+    
     # GAZEBO_MODEL_PATH has to be correctly set for Gazebo to be able to find the model
     spawn_entity = Node(
         package='gazebo_ros',
@@ -54,6 +61,7 @@ def generate_launch_description():
             cmd=['rviz2', '-d', rviz_config_path],
             output='screen'
         ),
-        moving_controller_node,  # Lancia il controller direttamente
+        moving_controller_node,
+        service_server_node 
     ])
 
