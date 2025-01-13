@@ -10,6 +10,7 @@ public:
     {
     
         publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
+        publisher_pf = this->create_publisher<geometry_msgs::msg::Pose>("/position_feet", 10);
 
         subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
             "/odom",
@@ -21,6 +22,9 @@ private:
     void odometryListenerCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
     {
         auto position = msg->pose.pose.position;
+        geometry_msgs::msg::Pose my_pose;
+        
+        float convert_constant = 3.28;
         //auto orientation = msg->pose.pose.orientation;
 
         /*RCLCPP_INFO(this->get_logger(), "Position: x=%.2f, y=%.2f, z=%.2f", position.x, position.y, position.z);
@@ -47,7 +51,11 @@ private:
         }
 
         // Publish velocity
+        my_pose.x = convert_constant*position.x;
+        my_pose.y = convert_constant*position.y;
+      
         publisher_->publish(vel);
+        publisher_pf->publish(my_pose);
         RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", vel.linear.x, vel.angular.z);
     }
 
